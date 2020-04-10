@@ -47,5 +47,7 @@ Other reasons/ info
 2. The access point will send to the server all the info needed like mac, transmission signal strength...
 3. the server will register the access point.  
 ### Screenshot from the first app
-![](images/scrennshot2.png)
+|screen1|screen2|
+|---|---|
+|![](images/scrennshot2.png)|![](images/screen3.png)|
 
