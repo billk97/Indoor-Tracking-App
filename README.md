@@ -32,3 +32,6 @@ Other reasons/ info
 * The was no object between the devices.
 * Except of the Raspberry pi the signal strength transmitted by the access point are not known. Because of that i assume they transmit at -30dB
 
+### Screenshot from the first app
+![](images/scrennshot2.png)
+
