@@ -1,6 +1,9 @@
 # Indoor-Tracking-App
 
 This is an android app that using signal strength from nearby WiFi access points triangulates and find the position of the device.
+**This app is in the early stages of development as such errors could occur**. 
+
+The app has not yet established any connection to the application server.
 
 ## Requirements
 
@@ -32,6 +35,17 @@ Other reasons/ info
 * The was no object between the devices.
 * Except of the Raspberry pi the signal strength transmitted by the access point are not known. Because of that i assume they transmit at -30dB
 
+## Basic flow
+##### How the app will communicate
+(the image recognition part is not included)
+1. The user opens the app for the first time.
+2. The app asks from the server the location of the access Points as well as the signal strengths
+3. The app scans for nearby access points and calculates the signal.
+4. Thea app sends the location to the application server.
+##### How the raspberry pi access points will communicate.
+1. The access point will boot 
+2. The access point will send to the server all the info needed like mac, transmission signal strength...
+3. the server will register the access point.  
 ### Screenshot from the first app
 ![](images/scrennshot2.png)
 
