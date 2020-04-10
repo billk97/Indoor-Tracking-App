@@ -4,7 +4,7 @@ This is an android app that using signal strength from nearby WiFi access points
 
 ## Requirements
 
-The access to the WiFi signal data is heavily restricted and as such a lot of permission are required. The following is a list of permissions required. In addition to that in order the app to work correctly the wifi and location service **MUST** be enable. If the app is not working permission must be granted manual via the settings menu.
+The access to the WiFi signal data is heavily restricted and as such a lot of permission are required. The following is a list of permissions required. 
 ~~~xml
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -13,6 +13,7 @@ The access to the WiFi signal data is heavily restricted and as such a lot of pe
 <uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ~~~
+In addition to that in order the app to work correctly the wifi and location service **MUST** be enable. If the app is not working permission must be granted manual via the settings menu.
 
 ## How to make the app work 
 
