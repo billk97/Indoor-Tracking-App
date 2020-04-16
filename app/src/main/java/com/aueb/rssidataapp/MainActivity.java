@@ -130,17 +130,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void InitAccessPoints(){
-        AccessPoint ap = new AccessPoint("ssid","4a:a0:5b:53:c6:e7",-30,3 );
+        AccessPoint ap = new AccessPoint("ssid","4a:a0:5b:53:c6:e7",-30,4.5 );
         ap.setX(0);
         ap.setY(0);
         knownAccessPoint.put(ap.getBssid(),ap);
 
-        AccessPoint ap1 = new AccessPoint("ssid","b8:27:eb:88:09:a2",-30,3 );
+        AccessPoint ap1 = new AccessPoint("ssid","b8:27:eb:88:09:a2",-30,4.5);
         ap1.setX(-2.1);
         ap1.setY(0);
         knownAccessPoint.put(ap1.getBssid(),ap1);
 
-        AccessPoint ap2 = new AccessPoint("ssid","70:3a:51:1b:97:94",-30,3 );
+        AccessPoint ap2 = new AccessPoint("ssid","70:3a:51:1b:97:94",-30,4.5 );
         ap2.setX(-0.5);
         ap2.setY(-2.3);
         knownAccessPoint.put(ap2.getBssid(),ap2);
