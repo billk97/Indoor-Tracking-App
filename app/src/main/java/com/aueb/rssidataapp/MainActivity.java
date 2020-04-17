@@ -18,6 +18,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -26,8 +27,14 @@ import android.widget.TextView;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
         checkPermissions();
         InitAccessPoints();
 
+        MainActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
         }else{
@@ -59,9 +73,11 @@ public class MainActivity extends AppCompatActivity {
             BroadcastReceiver wifiScanner = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-
                     boolean success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false);
                     if (success) {
+                        Date date = new Date();
+                        System.out.println(date);
+                        Log.i("scannTime",date.toString());
                         System.out.println("scanning");
                         List<ScanResult> results = wifiManager.getScanResults();// a list with the scan results
                         List<AccessPoint> accessPointsList = new ArrayList<>();
@@ -78,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                                 ap.setY(knownAccessPoint.get(ap.getBssid()).getY());
                                 accessPointsList.add(ap);
                             }
-                            bssid.add("bssid: "+ result.BSSID+ "\n ssid: "+ result.SSID + " \nLEVEL: "+ result.level + " \ndist: "+ ap.CalculateDistance());
+                            bssid.add("bssid: "+ result.BSSID+ "\n ssid: "+ result.SSID + " \nLEVEL: "+ result.level + " \ndist: "+ ap.CalculateDistance() + "\nDate: "+ date +"\n ");
                         }
                         ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, bssid);
                         simpleList.setAdapter(arrayAdapter);
@@ -86,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
                             System.out.println(ap.getBssid() +" " + ap.getX() +" "+ ap.getY()+" "+ap.CalculateDistance());
                         }
                         Triangulate tr = new Triangulate();
-                        Position position = tr.getPossition(accessPointsList);
-                        MainActivityTextViewX.setText(String.valueOf(position.getX()));
-                        MainActivityTextViewY.setText(String.valueOf(position.getY()));
+//                        Position position = tr.getPossition(accessPointsList);
+//                        MainActivityTextViewX.setText(String.valueOf(position.getX()));
+//                        MainActivityTextViewY.setText(String.valueOf(position.getY()));
 
                     }
                     else{
@@ -100,13 +116,28 @@ public class MainActivity extends AppCompatActivity {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
             getApplicationContext().registerReceiver(wifiScanner, intentFilter);
-
             boolean success = wifiManager.startScan();
             if (!success) {
                 System.out.println("Something when't wrong, probably permission where not given");
             } else {
                 System.out.println("Scanning is allowed");
             }
+
+            IntentFilter intentFilter1 = new IntentFilter();
+            intentFilter1.addAction(WifiManager.RSSI_CHANGED_ACTION);
+            BroadcastReceiver rssiChane = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String Bssi = wifiManager.getConnectionInfo().getBSSID();
+                    String rssi = Integer.toString(wifiManager.getConnectionInfo().getRssi());
+                    System.out.println("wifiManager.getConnectionInfo().getBSSID(): " + Bssi );
+                    System.out.println("wifiManager.getConnectionInfo().getRssi(): "+rssi );
+                    MainActivityTextViewX.setText(Bssi);
+                    MainActivityTextViewY.setText(rssi);
+
+                }
+            };
+            getApplicationContext().registerReceiver(rssiChane,intentFilter1);
 
         }
 

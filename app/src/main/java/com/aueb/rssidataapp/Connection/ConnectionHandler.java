@@ -1,6 +1,7 @@
 package com.aueb.rssidataapp.Connection;
 
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +21,7 @@ public class ConnectionHandler {
     private String ipAddress = "192.168.1.80";
     private String port = "8080";
 
-    public List<AccessPoint> getAccessPointList(){
+    public AccessPoint[] getAccessPointList(){
         URL url = null;
         BufferedReader reader = null;
         try {
@@ -36,29 +37,19 @@ public class ConnectionHandler {
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String jsonString = reader.readLine();
-            JSONArray jsonArray = new JSONArray(jsonString);
-            //List<AccessPoint> = JSONArray
-            return null;
+            System.out.println(jsonString);
+            Gson gson = new Gson();
+            AccessPoint [] ap = gson.fromJson(jsonString,AccessPoint[].class);
+            System.out.println(ap.length);
+
+            return gson.fromJson(jsonString,AccessPoint[].class);
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static void main(String[] args) {
-        AccessPoint a1 = new AccessPoint("ssid", "bssid", 10,1d);
-        AccessPoint a2 = new AccessPoint("ssid2", "bssid", 11,1d);
-        List<AccessPoint> accessPoints = new ArrayList<>();
-        accessPoints.add(a1);
-        accessPoints.add(a2);
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put(a1);
-        jsonArray.put(a2);
-        //System.out.println(jsonArray.toString());
-        //List<AccessPoint> = JSONArray
-    }
 }

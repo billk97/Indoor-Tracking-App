@@ -90,4 +90,17 @@ public class AccessPoint {
         double power = (dividend/divisor);
         return Math.pow(10,power);
     }
+
+    @Override
+    public String toString() {
+        return "AccessPoint{" +
+                "ssid='" + ssid + '\'' +
+                ", bssid='" + bssid + '\'' +
+                ", level=" + level +
+                ", TxPower=" + TxPower +
+                ", h=" + h +
+                ", x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }
