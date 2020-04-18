@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarOutputStream;
 
 public class MainActivity extends AppCompatActivity {
     private ListView simpleList;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         initializer();
         checkPermissions();
         InitAccessPoints();
+        final List<AccessPoint> accessPointsList = new ArrayList<>();
 
         MainActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,17 +77,15 @@ public class MainActivity extends AppCompatActivity {
                 public void onReceive(Context context, Intent intent) {
                     boolean success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false);
                     if (success) {
+                        accessPointsList.clear();
                         Date date = new Date();
                         System.out.println(date);
                         Log.i("scannTime",date.toString());
                         System.out.println("scanning");
                         List<ScanResult> results = wifiManager.getScanResults();// a list with the scan results
-                        List<AccessPoint> accessPointsList = new ArrayList<>();
-                        List<String> bssid = new ArrayList<>(); // creating a list to display at list view
+
+                        //List<String> bssid = new ArrayList<>(); // creating a list to display at list view
                         for (ScanResult result : results) {
-                            Log.i("wifiscann",result.BSSID);
-                            Log.i("wifiscann",String.valueOf(result.level));
-                            Log.i("wifiscann", String.valueOf(result.level));
                             /** creating a object type AccessPoint for each scan result **/
                             AccessPoint ap = new AccessPoint(result.SSID, result.BSSID, result.level, -30, 4.5);
                             System.out.println("distance: " + ap.CalculateDistance());
@@ -94,18 +94,10 @@ public class MainActivity extends AppCompatActivity {
                                 ap.setY(knownAccessPoint.get(ap.getBssid()).getY());
                                 accessPointsList.add(ap);
                             }
-                            bssid.add("bssid: "+ result.BSSID+ "\n ssid: "+ result.SSID + " \nLEVEL: "+ result.level + " \ndist: "+ ap.CalculateDistance() + "\nDate: "+ date +"\n ");
+                            //bssid.add("bssid: "+ result.BSSID+ "\n ssid: "+ result.SSID + " \nLEVEL: "+ result.level + " \ndist: "+ ap.CalculateDistance() + "\nDate: "+ date +"\n ");
                         }
-                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, bssid);
-                        simpleList.setAdapter(arrayAdapter);
-                        for(AccessPoint ap : accessPointsList){
-                            System.out.println(ap.getBssid() +" " + ap.getX() +" "+ ap.getY()+" "+ap.CalculateDistance());
-                        }
-                        Triangulate tr = new Triangulate();
-//                        Position position = tr.getPossition(accessPointsList);
-//                        MainActivityTextViewX.setText(String.valueOf(position.getX()));
-//                        MainActivityTextViewY.setText(String.valueOf(position.getY()));
-
+//                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, bssid);
+//                        simpleList.setAdapter(arrayAdapter);
                     }
                     else{
                         System.out.println("Scanning failed");
@@ -129,17 +121,35 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     String Bssi = wifiManager.getConnectionInfo().getBSSID();
-                    String rssi = Integer.toString(wifiManager.getConnectionInfo().getRssi());
-                    System.out.println("wifiManager.getConnectionInfo().getBSSID(): " + Bssi );
-                    System.out.println("wifiManager.getConnectionInfo().getRssi(): "+rssi );
+                    int rssi = wifiManager.getConnectionInfo().getRssi();
+                    System.out.println("rssi change bssid: " + Bssi );
+                    System.out.println("rssi change new rssi: "+ rssi );
+                    System.out.println(wifiManager.EXTRA_NEW_RSSI);
+                    List<String> bssid = new ArrayList<>(); // creating a list to display at list view
+                    for (AccessPoint ap : accessPointsList){
+                        if(Bssi.equals(ap.getBssid())){
+                            ap.setLevel(rssi);
+                        }
+                        System.out.println(ap.toString());
+                        bssid.add(ap.toString());
+                    }
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, bssid);
+                    simpleList.setAdapter(arrayAdapter);
+//                    Triangulate tr = new Triangulate();
+//                    Position position = tr.getPossition(accessPointsList);
+//                    MainActivityTextViewX.setText(String.valueOf(position.getX()));
+//                    MainActivityTextViewY.setText(String.valueOf(position.getY()));
                     MainActivityTextViewX.setText(Bssi);
-                    MainActivityTextViewY.setText(rssi);
+                    MainActivityTextViewY.setText(Integer.toString(rssi));
 
                 }
             };
             getApplicationContext().registerReceiver(rssiChane,intentFilter1);
 
+
+
         }
+
 
     }
     private void initializer(){
