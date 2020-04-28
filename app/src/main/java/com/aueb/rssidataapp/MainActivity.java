@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,9 +25,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.aueb.rssidataapp.Connection.ConnectionHandler;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import java.util.ArrayList;
@@ -185,5 +190,26 @@ public class MainActivity extends AppCompatActivity {
         ap2.setX(-0.5);
         ap2.setY(-2.3);
         knownAccessPoint.put(ap3.getBssid(),ap3);
+        AsyncTaskRunner runner = new AsyncTaskRunner();
+        runner.execute();
+
+    }
+    private class AsyncTaskRunner extends AsyncTask<String,String,String>{
+        @Override
+        protected String doInBackground(String... strings) {
+            ConnectionHandler connectionHandler = new ConnectionHandler();
+            List<AccessPoint> accessPoints =null;
+            try {
+                accessPoints = new ObjectMapper().readValue(connectionHandler.getAccessPointList(), new TypeReference<List<AccessPoint>>() {});
+                System.out.println("ok");
+
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            for (AccessPoint accessPoint : accessPoints){
+                knownAccessPoint.put(accessPoint.getBssid(),accessPoint);
+            }
+            return null;
+        }
     }
 }
