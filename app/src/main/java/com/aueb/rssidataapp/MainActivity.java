@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.aueb.rssidataapp.Connection.ConnectionHandler;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
             /**The broadcast receiver is cast in a Intent and requires the creation of a new Intent to be created**/
+           // BroadcastReceiver brclass= new ScanBroadCastReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
             getApplicationContext().registerReceiver(wifiScanner, intentFilter);
@@ -135,26 +137,26 @@ public class MainActivity extends AppCompatActivity {
                     }
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, bssid);
                     simpleList.setAdapter(arrayAdapter);
-//                    Triangulate tr = new Triangulate();
-//                    Position position = tr.getPossition(accessPointsList);
-//                    MainActivityTextViewX.setText(String.valueOf(position.getX()));
-//                    MainActivityTextViewY.setText(String.valueOf(position.getY()));
-                    MainActivityTextViewX.setText(Bssi);
-                    MainActivityTextViewY.setText(Integer.toString(rssi));
+                    if(accessPointsList.size()>2){
+                        Triangulate tr = new Triangulate();
+                        Position position = tr.getPossition(accessPointsList);
+                        MainActivityTextViewX.setText(String.valueOf(position.getX()));
+                        MainActivityTextViewY.setText(String.valueOf(position.getY()));
+                    }
+
+                    //MainActivityTextViewX.setText(Bssi);
+                    //MainActivityTextViewY.setText(Integer.toString(rssi));
 
                 }
             };
             getApplicationContext().registerReceiver(rssiChane,intentFilter1);
-
-
-
         }
-
-
+        ConnectionHandler ch = new ConnectionHandler();
+        System.out.println(ch.getAccessPointList());
     }
     private void initializer(){
         simpleList = (ListView) findViewById(R.id.mylist);
-        MainActivityTextViewX = (TextView) findViewById(R.id.MainActivityTextViewX);
+        MainActivityTextViewX = (TextView) findViewById(R.id.MainActivityTextViewX); 
         MainActivityTextViewY = (TextView) findViewById(R.id.MainActivityTextViewY);
         MainActivityButton = (Button) findViewById(R.id.MainActivityButton);
     }
@@ -172,18 +174,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void InitAccessPoints(){
         AccessPoint ap = new AccessPoint("ssid","4a:a0:5b:53:c6:e7",-30,4.5 );
-        ap.setX(0);
-        ap.setY(0);
+        ap.setX(1);
+        ap.setY(1);
         knownAccessPoint.put(ap.getBssid(),ap);
 
         AccessPoint ap1 = new AccessPoint("ssid","b8:27:eb:88:09:a2",-30,4.5);
         ap1.setX(-2.1);
-        ap1.setY(0);
+        ap1.setY(1);
         knownAccessPoint.put(ap1.getBssid(),ap1);
 
-        AccessPoint ap2 = new AccessPoint("ssid","70:3a:51:1b:97:94",-30,4.5 );
+        AccessPoint ap2 = new AccessPoint("ssid","dc:a6:32:2a:18:ce",-30,4.5 );
         ap2.setX(-0.5);
         ap2.setY(-2.3);
         knownAccessPoint.put(ap2.getBssid(),ap2);
+
+        AccessPoint ap3 = new AccessPoint("ssid","dc:a6:32:29:d9:8c",-30,4.5 );
+        ap2.setX(-0.5);
+        ap2.setY(-2.3);
+        knownAccessPoint.put(ap3.getBssid(),ap3);
     }
 }

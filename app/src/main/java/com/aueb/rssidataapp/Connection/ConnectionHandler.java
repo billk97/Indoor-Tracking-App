@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectionHandler {
-    private String ipAddress = "192.168.1.80";
+    private String ipAddress = "192.168.1.70";
     private String port = "8080";
 
-    public AccessPoint[] getAccessPointList(){
+    public String getAccessPointList(){
         URL url = null;
         BufferedReader reader = null;
         try {
@@ -42,7 +42,7 @@ public class ConnectionHandler {
             AccessPoint [] ap = gson.fromJson(jsonString,AccessPoint[].class);
             System.out.println(ap.length);
 
-            return gson.fromJson(jsonString,AccessPoint[].class);
+            return gson.fromJson(jsonString,AccessPoint[].class).toString();
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -51,5 +51,6 @@ public class ConnectionHandler {
         }
         return null;
     }
+
 
 }
