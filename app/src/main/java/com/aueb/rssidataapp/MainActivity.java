@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView MainActivityTextViewY;
     private Button MainActivityButton;
     private HashMap<String, AccessPoint> knownAccessPoint = new HashMap();
+    //todo send location to navDemo
+    //todo cleanUp and break to classes
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @SuppressLint("SetTextI18n")
