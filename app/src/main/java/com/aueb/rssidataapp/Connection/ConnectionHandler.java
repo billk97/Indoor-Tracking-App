@@ -1,11 +1,7 @@
 package com.aueb.rssidataapp.Connection;
 
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
-import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,8 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ConnectionHandler {
     private String ipAddress = "192.168.1.70";
@@ -38,12 +33,7 @@ public class ConnectionHandler {
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String jsonString = reader.readLine();
             System.out.println(jsonString);
-            Gson gson = new Gson();
-            AccessPoint [] ap = gson.fromJson(jsonString,AccessPoint[].class);
-            System.out.println(ap.length);
-
-            return gson.fromJson(jsonString,AccessPoint[].class).toString();
-
+            return jsonString;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -51,6 +41,5 @@ public class ConnectionHandler {
         }
         return null;
     }
-
 
 }

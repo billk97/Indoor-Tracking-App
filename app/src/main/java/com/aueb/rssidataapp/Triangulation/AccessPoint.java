@@ -1,5 +1,7 @@
 package com.aueb.rssidataapp.Triangulation;
 
+import java.util.Objects;
+
 /**
  * Class AccessPoint represents an Access Point with the values we need **/
 public class AccessPoint {
@@ -13,6 +15,25 @@ public class AccessPoint {
     private double y; // the position of the access point in the y access
 
     public AccessPoint(){}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AccessPoint)) return false;
+        AccessPoint that = (AccessPoint) o;
+        return level == that.level &&
+                TxPower == that.TxPower &&
+                Double.compare(that.h, h) == 0 &&
+                Double.compare(that.x, x) == 0 &&
+                Double.compare(that.y, y) == 0 &&
+                ssid.equals(that.ssid) &&
+                bssid.equals(that.bssid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ssid, bssid, level, TxPower, h, x, y);
+    }
 
     public AccessPoint(String ssid, String bssid, int TxPower, double h){
         this.ssid=ssid;
@@ -103,6 +124,4 @@ public class AccessPoint {
                 ", y=" + y +
                 '}';
     }
-
-
 }

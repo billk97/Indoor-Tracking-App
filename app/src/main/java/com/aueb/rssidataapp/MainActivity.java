@@ -24,22 +24,16 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.aueb.rssidataapp.Connection.ConnectionHandler;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
-import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarOutputStream;
 
 public class MainActivity extends AppCompatActivity {
     private ListView simpleList;
@@ -106,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
             /**The broadcast receiver is cast in a Intent and requires the creation of a new Intent to be created**/
-           // BroadcastReceiver brclass= new ScanBroadCastReceiver();
+            // BroadcastReceiver brclass= new ScanBroadCastReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
             getApplicationContext().registerReceiver(wifiScanner, intentFilter);
@@ -151,12 +145,11 @@ public class MainActivity extends AppCompatActivity {
             };
             getApplicationContext().registerReceiver(rssiChane,intentFilter1);
         }
-        ConnectionHandler ch = new ConnectionHandler();
-        System.out.println(ch.getAccessPointList());
+
     }
     private void initializer(){
         simpleList = (ListView) findViewById(R.id.mylist);
-        MainActivityTextViewX = (TextView) findViewById(R.id.MainActivityTextViewX); 
+        MainActivityTextViewX = (TextView) findViewById(R.id.MainActivityTextViewX);
         MainActivityTextViewY = (TextView) findViewById(R.id.MainActivityTextViewY);
         MainActivityButton = (Button) findViewById(R.id.MainActivityButton);
     }
