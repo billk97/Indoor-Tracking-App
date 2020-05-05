@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private ListView simpleList;
@@ -207,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
             ConnectionHandler connectionHandler = new ConnectionHandler();
             List<AccessPoint> accessPoints =null;
             try {
-                accessPoints = new ObjectMapper().readValue(connectionHandler.getAccessPointList(), new TypeReference<List<AccessPoint>>() {});
+                accessPoints = new ObjectMapper().readValue(connectionHandler.getRequest("access-point"), new TypeReference<List<AccessPoint>>() {});
                 System.out.println("ok");
 
             } catch (JsonProcessingException e) {

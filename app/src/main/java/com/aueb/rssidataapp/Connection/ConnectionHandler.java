@@ -18,11 +18,11 @@ public class ConnectionHandler {
     private String ipAddress = "192.168.1.70";
     private String port = "8080";
 
-    public String getAccessPointList(){
+    public String getRequest(String urlRequestParam){
         URL url = null;
         BufferedReader reader = null;
         try {
-            url = new URL("http://"+ipAddress+":"+port+"/access-point");
+            url = new URL("http://"+ipAddress+":"+port+"/"+urlRequestParam);
             HttpURLConnection  connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
@@ -34,7 +34,6 @@ public class ConnectionHandler {
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String jsonString = reader.readLine();
-            System.out.println(jsonString);
             return jsonString;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -43,6 +42,7 @@ public class ConnectionHandler {
         }
         return null;
     }
+
     public void sendLocation(String devName, double lat , double lon){
         URL url = null;
         BufferedReader reader = null;
