@@ -69,7 +69,7 @@
         android:text="Destination"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ConfigStartSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/ConfigSpinnerStart" />
 
     <Spinner
         android:id="@+id/ConfigDestinationSpinner"
