@@ -3,7 +3,6 @@
     <string name="locationHint">Select your location</string>
     <string name="destinationHint">Select your destination</string>
     <string-array name="Locations">
-        <item name="Kitchen">Kitchen</item>
         <item name="semi">semi</item>
         <item name="living room">living room</item>
         <item name="bedroom">bedroom</item>

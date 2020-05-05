@@ -1,6 +1,8 @@
 package com.aueb.rssidataapp.Triangulation;
 
-public class PointOfInterest {
+import java.io.Serializable;
+
+public class PointOfInterest implements Serializable {
 
     private String name;
     private double lat, lon;
@@ -34,5 +36,14 @@ public class PointOfInterest {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    @Override
+    public String toString() {
+        return "PointOfInterest{" +
+                "name='" + name + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                '}';
     }
 }

@@ -2,6 +2,7 @@ package com.aueb.rssidataapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +27,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ConfigDirections extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class ConfigDirections extends AppCompatActivity implements
+        AdapterView.OnItemSelectedListener ,Serializable {
     private Spinner starLocationSpinner, destinationLocationSpinner;
     private Button findMeButton, StartNavigationButton;
+    private List<PointOfInterest> pois = null;
+    private PointOfInterest StartLocation ,DestinationLocation  = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +41,9 @@ public class ConfigDirections extends AppCompatActivity implements AdapterView.O
         initialize();
         PoiRunner runner = new PoiRunner();
         runner.execute("poi");
-
+        starLocationSpinner.setOnItemSelectedListener(this);
+        destinationLocationSpinner.setOnItemSelectedListener(this);
+        onNavigateClick();
     }
 
     private void initialize(){
@@ -49,7 +56,27 @@ public class ConfigDirections extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        System.out.println(parent.getItemAtPosition(position));
+        Spinner spinner1 = (Spinner) parent;
+        Spinner spinner2 = (Spinner) parent;
+        if (spinner1.getId() == R.id.ConfigSpinnerStart){
+            if(pois!=null){
+                for (PointOfInterest po : pois){
+                    if(po.getName().equals(parent.getItemAtPosition(position))){
+                        StartLocation = po;
+                    }
+                }
+            }
+        }
+        if(spinner2.getId() == R.id.ConfigDestinationSpinner){
+            if(pois!=null){
+                for (PointOfInterest po : pois){
+                    if(po.getName().equals(parent.getItemAtPosition(position))){
+                        DestinationLocation = po;
+                    }
+                }
+            }
+        }
+
 
     }
 
@@ -57,22 +84,31 @@ public class ConfigDirections extends AppCompatActivity implements AdapterView.O
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+    private void onNavigateClick(){
+        StartNavigationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("Start", StartLocation).putExtra("Destination",  DestinationLocation);
+                startActivity(intent);
+            }
+        });
+    }
 
-    private class PoiRunner extends AsyncTask<String, String,String> implements AdapterView.OnItemSelectedListener {
-        String response = null;
+    private class PoiRunner extends AsyncTask<String, String,String> {
+
 
         @Override
         protected String doInBackground(String... strings) {
             ConnectionHandler connectionHandler = new ConnectionHandler();
-            response = connectionHandler.getRequest(strings[0]);
-            return  response;
+            return connectionHandler.getRequest(strings[0]);
         }
-
-        protected void onPostExecute(String... strings){
-            ArrayList<String> poiName = null;
-            List<PointOfInterest> pois = null;
+        @Override
+        protected void onPostExecute(String returnValue){
+            System.out.println(returnValue);
+            ArrayList<String> poiName = new ArrayList<>();
             try {
-                pois = new ObjectMapper().readValue(response, new TypeReference<List<PointOfInterest>>() {});
+                pois = new  ObjectMapper().readValue(returnValue, new TypeReference<List<PointOfInterest>>() {});
                 for (PointOfInterest po : pois){
                     poiName.add(po.getName());
                 }
@@ -84,17 +120,8 @@ public class ConfigDirections extends AppCompatActivity implements AdapterView.O
                             (getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, poiName);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             starLocationSpinner.setAdapter(adapter);
-            starLocationSpinner.setOnItemSelectedListener(this);
+            destinationLocationSpinner.setAdapter(adapter);
         }
 
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            System.out.println(parent.getItemAtPosition(position));
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
     }
 }

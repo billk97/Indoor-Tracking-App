@@ -1,10 +1,11 @@
 package com.aueb.rssidataapp.Triangulation;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Class AccessPoint represents an Access Point with the values we need **/
-public class AccessPoint {
+public class AccessPoint implements Serializable {
     private String ssid; // the name of the network that the access point is connected to
     private String bssid; // the mac address of each access poin
     /**the signal strength the device receives in decibels  **/

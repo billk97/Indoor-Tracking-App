@@ -15,7 +15,7 @@ import java.net.URL;
 
 
 public class ConnectionHandler {
-    private String ipAddress = "192.168.1.70";
+    private String ipAddress = "192.168.1.71";
     private String port = "8080";
 
     public String getRequest(String urlRequestParam){
