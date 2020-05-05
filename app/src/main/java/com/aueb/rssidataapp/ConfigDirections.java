@@ -33,6 +33,9 @@ public class ConfigDirections extends AppCompatActivity implements
     private Button findMeButton, StartNavigationButton;
     private List<PointOfInterest> pois = null;
     private PointOfInterest StartLocation ,DestinationLocation  = null;
+    //Todo implement Find me button
+    //Todo get navigation info
+    //Todo catch exceptions
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
