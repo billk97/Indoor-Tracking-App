@@ -96,10 +96,7 @@ public class MainActivity extends AppCompatActivity {
                                 ap.setY(knownAccessPoint.get(ap.getBssid()).getY());
                                 accessPointsList.add(ap);
                             }
-                            //bssid.add("bssid: "+ result.BSSID+ "\n ssid: "+ result.SSID + " \nLEVEL: "+ result.level + " \ndist: "+ ap.CalculateDistance() + "\nDate: "+ date +"\n ");
                         }
-//                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, bssid);
-//                        simpleList.setAdapter(arrayAdapter);
                     }
                     else{
                         System.out.println("Scanning failed");
@@ -143,11 +140,10 @@ public class MainActivity extends AppCompatActivity {
                         Position position = tr.getPossition(accessPointsList);
                         MainActivityTextViewX.setText(String.valueOf(position.getX()));
                         MainActivityTextViewY.setText(String.valueOf(position.getY()));
+                        //AsyncTaskRunnerSendLoc asyncTaskRunner = new AsyncTaskRunnerSendLoc();
+                        //asyncTaskRunner.execute("name", String.valueOf(position.getX()),String.valueOf(position.getY()));
+
                     }
-
-                    //MainActivityTextViewX.setText(Bssi);
-                    //MainActivityTextViewY.setText(Integer.toString(rssi));
-
                 }
             };
             getApplicationContext().registerReceiver(rssiChane,intentFilter1);
@@ -195,6 +191,15 @@ public class MainActivity extends AppCompatActivity {
         AsyncTaskRunner runner = new AsyncTaskRunner();
         runner.execute();
 
+    }
+    private class AsyncTaskRunnerSendLoc extends AsyncTask<String,String,String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+            ConnectionHandler connectionHandler = new ConnectionHandler();
+            connectionHandler.sendLocation(strings[0],Double.valueOf(strings[1]),Double.valueOf(strings[2]));
+            return null;
+        }
     }
     private class AsyncTaskRunner extends AsyncTask<String,String,String>{
         @Override
