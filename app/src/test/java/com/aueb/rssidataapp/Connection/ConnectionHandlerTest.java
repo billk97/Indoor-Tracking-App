@@ -17,6 +17,8 @@ import static org.junit.Assert.*;
 
 public class ConnectionHandlerTest {
 
+
+
     @Test
     public void getAccessPointList() {
         ConnectionHandler ch = new ConnectionHandler();
