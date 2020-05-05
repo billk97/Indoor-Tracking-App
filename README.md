@@ -1,5 +1,6 @@
 # Indoor-Tracking-App
 
+:office: :signal_strength: :iphone: 
 This is an android app that using signal strength from nearby WiFi access points triangulates and find the position of the device.
 **This app is in the early stages of development as such errors could occur**. 
 
@@ -41,9 +42,13 @@ Other reasons/ info
 (the image recognition part is not included)
 1. The user opens the app for the first time.
 2. The app comunnicates with the api for all the known (POIS) point of interests exp(Terminal1,Terminal2)
-2. The app asks from the server the location of the access Points as well as the signal strengths
-3. The app scans for nearby access points and calculates the signal.
-4. Thea app sends the location to the application server.
+3. The app ask the user to pick the Source and destination points and ask from The API instraction.
+2. (Navigation)The app asks from the server the location of the access Points as well as the emmited signal strengths 
+3. The app scans for nearby access points and calculates the signal and calculates the possition of the device .
+4. Thea app sends the location to the application server. ??
+
+
+Does the app need to ask the server again for directions???
 
 ##### How the raspberry pi access points will communicate.
 1. The access point will boot 
