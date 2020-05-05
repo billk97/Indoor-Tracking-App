@@ -1,6 +1,8 @@
 package com.aueb.rssidataapp.Triangulation;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable {
     private double X;
     private double Y;
 

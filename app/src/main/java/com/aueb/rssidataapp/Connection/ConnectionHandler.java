@@ -2,29 +2,27 @@ package com.aueb.rssidataapp.Connection;
 
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ConnectionHandler {
-    private String ipAddress = "192.168.1.80";
+    private String ipAddress = "192.168.1.71";
     private String port = "8080";
 
-    public List<AccessPoint> getAccessPointList(){
+    public String getRequest(String urlRequestParam){
         URL url = null;
         BufferedReader reader = null;
         try {
-            url = new URL("http://"+ipAddress+":"+port+"/access-point");
+            url = new URL("http://"+ipAddress+":"+port+"/"+urlRequestParam);
             HttpURLConnection  connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
@@ -36,29 +34,43 @@ public class ConnectionHandler {
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String jsonString = reader.readLine();
-            JSONArray jsonArray = new JSONArray(jsonString);
-            //List<AccessPoint> = JSONArray
-            return null;
+            return jsonString;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static void main(String[] args) {
-        AccessPoint a1 = new AccessPoint("ssid", "bssid", 10,1d);
-        AccessPoint a2 = new AccessPoint("ssid2", "bssid", 11,1d);
-        List<AccessPoint> accessPoints = new ArrayList<>();
-        accessPoints.add(a1);
-        accessPoints.add(a2);
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put(a1);
-        jsonArray.put(a2);
-        //System.out.println(jsonArray.toString());
-        //List<AccessPoint> = JSONArray
+    public void sendLocation(String devName, double lat , double lon){
+        URL url = null;
+        BufferedReader reader = null;
+        try {
+            url = new URL("http://"+ipAddress+":"+port+"poi");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            connection.setDoOutput(true);
+            String jsonString = "{name :" + devName + ", lat: " + lat + ",lon: " + lon +"}";
+            try (OutputStream os = connection.getOutputStream()){
+                byte [] input = jsonString.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+            connection.connect();
+            InputStream inputStream = connection.getInputStream();
+            StringBuffer buffer = new StringBuffer();
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line = reader.readLine();
+            System.out.println(line);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
+
 }

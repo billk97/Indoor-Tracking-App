@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">RssiDataApp</string>
+    <string name="locationHint">Select your location</string>
+    <string name="destinationHint">Select your destination</string>
+    <string-array name="Locations">
+        <item name="semi">semi</item>
+        <item name="living room">living room</item>
+        <item name="bedroom">bedroom</item>
+        <item name="storage">storage</item>
+        <item name="bathroom">bathroom</item>
+        <item name="door">door</item>
+        <item name="bedrooms">bedrooms</item>
+    </string-array>
+
 </resources>

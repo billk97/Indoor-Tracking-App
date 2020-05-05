@@ -2,10 +2,11 @@ package com.aueb.rssidataapp.Triangulation;
 
 import org.ejml.simple.SimpleMatrix;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Triangulate {
+public class Triangulate implements Serializable {
     /**this function returns the X and Y position of the phone
      * @param accessPoints  a list of accessPoints type AccessPoint
      * @return returns an Object type Position with two values (x,y)
@@ -48,29 +49,5 @@ public class Triangulate {
         System.out.println(At.get(1,0));
         return new Position(At.get(0,0),At.get(1,0));
     }
-    public static void main(String[] args) {
-        Triangulate tr = new Triangulate();
-        List<AccessPoint> listofap = new ArrayList<AccessPoint>();
-        AccessPoint ap = new AccessPoint("ssid","ROUTER",-44,-30,3 );
-        ap.setX(0);
-        ap.setY(0);
-        listofap.add(ap);
 
-        AccessPoint ap1 = new AccessPoint("ssid","rasbary",-42,-30,3 );
-        ap1.setX(-2.1);
-        ap1.setY(0);
-        listofap.add(ap1);
-
-        AccessPoint ap2 = new AccessPoint("ssid","mobile",-41,-30,3 );
-        ap2.setX(-0.5);
-        ap2.setY(-2.3);
-        listofap.add(ap2);
-        tr.getPossition(listofap);
-
-//        AccessPoint ap3 = new AccessPoint("ssid","mac",-55,-30,3 );
-//        ap3.setX(2.5);
-//        ap3.setY(2);
-//        listofap.add(ap3);
-//        tr.getPossition(listofap);
-    }
 }

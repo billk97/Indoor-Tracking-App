@@ -13,24 +13,30 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.aueb.rssidataapp.Connection.ConnectionHandler;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private ListView simpleList;
@@ -38,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView MainActivityTextViewY;
     private Button MainActivityButton;
     private HashMap<String, AccessPoint> knownAccessPoint = new HashMap();
+    //todo send location to navDemo
+    //todo cleanUp and break to classes
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @SuppressLint("SetTextI18n")
@@ -48,6 +56,14 @@ public class MainActivity extends AppCompatActivity {
         initializer();
         checkPermissions();
         InitAccessPoints();
+        final List<AccessPoint> accessPointsList = new ArrayList<>();
+
+        MainActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
@@ -59,17 +75,17 @@ public class MainActivity extends AppCompatActivity {
             BroadcastReceiver wifiScanner = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-
                     boolean success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false);
                     if (success) {
+                        accessPointsList.clear();
+                        Date date = new Date();
+                        System.out.println(date);
+                        Log.i("scannTime",date.toString());
                         System.out.println("scanning");
                         List<ScanResult> results = wifiManager.getScanResults();// a list with the scan results
-                        List<AccessPoint> accessPointsList = new ArrayList<>();
-                        List<String> bssid = new ArrayList<>(); // creating a list to display at list view
+
+                        //List<String> bssid = new ArrayList<>(); // creating a list to display at list view
                         for (ScanResult result : results) {
-                            Log.i("wifiscann",result.BSSID);
-                            Log.i("wifiscann",String.valueOf(result.level));
-                            Log.i("wifiscann", String.valueOf(result.level));
                             /** creating a object type AccessPoint for each scan result **/
                             AccessPoint ap = new AccessPoint(result.SSID, result.BSSID, result.level, -30, 4.5);
                             System.out.println("distance: " + ap.CalculateDistance());
@@ -78,18 +94,7 @@ public class MainActivity extends AppCompatActivity {
                                 ap.setY(knownAccessPoint.get(ap.getBssid()).getY());
                                 accessPointsList.add(ap);
                             }
-                            bssid.add("bssid: "+ result.BSSID+ "\n ssid: "+ result.SSID + " \nLEVEL: "+ result.level + " \ndist: "+ ap.CalculateDistance());
                         }
-                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, bssid);
-                        simpleList.setAdapter(arrayAdapter);
-                        for(AccessPoint ap : accessPointsList){
-                            System.out.println(ap.getBssid() +" " + ap.getX() +" "+ ap.getY()+" "+ap.CalculateDistance());
-                        }
-                        Triangulate tr = new Triangulate();
-                        Position position = tr.getPossition(accessPointsList);
-                        MainActivityTextViewX.setText(String.valueOf(position.getX()));
-                        MainActivityTextViewY.setText(String.valueOf(position.getY()));
-
                     }
                     else{
                         System.out.println("Scanning failed");
@@ -97,10 +102,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
             /**The broadcast receiver is cast in a Intent and requires the creation of a new Intent to be created**/
+            // BroadcastReceiver brclass= new ScanBroadCastReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
             getApplicationContext().registerReceiver(wifiScanner, intentFilter);
-
             boolean success = wifiManager.startScan();
             if (!success) {
                 System.out.println("Something when't wrong, probably permission where not given");
@@ -108,6 +113,38 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Scanning is allowed");
             }
 
+            IntentFilter intentFilter1 = new IntentFilter();
+            intentFilter1.addAction(WifiManager.RSSI_CHANGED_ACTION);
+            BroadcastReceiver rssiChane = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String Bssi = wifiManager.getConnectionInfo().getBSSID();
+                    int rssi = wifiManager.getConnectionInfo().getRssi();
+                    System.out.println("rssi change bssid: " + Bssi );
+                    System.out.println("rssi change new rssi: "+ rssi );
+                    System.out.println(wifiManager.EXTRA_NEW_RSSI);
+                    List<String> bssid = new ArrayList<>(); // creating a list to display at list view
+                    for (AccessPoint ap : accessPointsList){
+                        if(Bssi.equals(ap.getBssid())){
+                            ap.setLevel(rssi);
+                        }
+                        System.out.println(ap.toString());
+                        bssid.add(ap.toString());
+                    }
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, bssid);
+                    simpleList.setAdapter(arrayAdapter);
+                    if(accessPointsList.size()>2){
+                        Triangulate tr = new Triangulate();
+                        Position position = tr.getPossition(accessPointsList);
+                        MainActivityTextViewX.setText(String.valueOf(position.getX()));
+                        MainActivityTextViewY.setText(String.valueOf(position.getY()));
+                        //AsyncTaskRunnerSendLoc asyncTaskRunner = new AsyncTaskRunnerSendLoc();
+                        //asyncTaskRunner.execute("name", String.valueOf(position.getX()),String.valueOf(position.getY()));
+
+                    }
+                }
+            };
+            getApplicationContext().registerReceiver(rssiChane,intentFilter1);
         }
 
     }
@@ -131,18 +168,53 @@ public class MainActivity extends AppCompatActivity {
 
     private void InitAccessPoints(){
         AccessPoint ap = new AccessPoint("ssid","4a:a0:5b:53:c6:e7",-30,4.5 );
-        ap.setX(0);
-        ap.setY(0);
+        ap.setX(1);
+        ap.setY(1);
         knownAccessPoint.put(ap.getBssid(),ap);
 
         AccessPoint ap1 = new AccessPoint("ssid","b8:27:eb:88:09:a2",-30,4.5);
         ap1.setX(-2.1);
-        ap1.setY(0);
+        ap1.setY(1);
         knownAccessPoint.put(ap1.getBssid(),ap1);
 
-        AccessPoint ap2 = new AccessPoint("ssid","70:3a:51:1b:97:94",-30,4.5 );
+        AccessPoint ap2 = new AccessPoint("ssid","dc:a6:32:2a:18:ce",-30,4.5 );
         ap2.setX(-0.5);
         ap2.setY(-2.3);
         knownAccessPoint.put(ap2.getBssid(),ap2);
+
+        AccessPoint ap3 = new AccessPoint("ssid","dc:a6:32:29:d9:8c",-30,4.5 );
+        ap2.setX(-0.5);
+        ap2.setY(-2.3);
+        knownAccessPoint.put(ap3.getBssid(),ap3);
+        AsyncTaskRunner runner = new AsyncTaskRunner();
+        runner.execute();
+
+    }
+    private class AsyncTaskRunnerSendLoc extends AsyncTask<String,String,String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+            ConnectionHandler connectionHandler = new ConnectionHandler();
+            connectionHandler.sendLocation(strings[0],Double.valueOf(strings[1]),Double.valueOf(strings[2]));
+            return null;
+        }
+    }
+    private class AsyncTaskRunner extends AsyncTask<String,String,String>{
+        @Override
+        protected String doInBackground(String... strings) {
+            ConnectionHandler connectionHandler = new ConnectionHandler();
+            List<AccessPoint> accessPoints =null;
+            try {
+                accessPoints = new ObjectMapper().readValue(connectionHandler.getRequest("access-point"), new TypeReference<List<AccessPoint>>() {});
+                System.out.println("ok");
+
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            for (AccessPoint accessPoint : accessPoints){
+                knownAccessPoint.put(accessPoint.getBssid(),accessPoint);
+            }
+            return null;
+        }
     }
 }
