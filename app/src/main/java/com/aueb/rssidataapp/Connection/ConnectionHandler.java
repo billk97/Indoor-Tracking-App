@@ -1,7 +1,11 @@
 package com.aueb.rssidataapp.Connection;
 
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
+import com.aueb.rssidataapp.Triangulation.Nav;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +19,7 @@ import java.net.URL;
 
 
 public class ConnectionHandler {
-    private String ipAddress = "192.168.1.71";
+    private String ipAddress = "192.168.1.70";
     private String port = "8080";
 
     public String getRequest(String urlRequestParam){
@@ -70,6 +74,38 @@ public class ConnectionHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+    public String getNavInstructions(String urlRequestParam , Nav nav){URL url = null;
+        BufferedReader reader = null;
+        try {
+            url = new URL("http://"+ipAddress+":"+port+"/"+urlRequestParam);
+            HttpURLConnection  connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type","application/json; utf-8");
+            connection.setDoOutput(true);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonInputString = objectMapper.writeValueAsString(nav);
+            try (OutputStream os = connection.getOutputStream()){
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input,0,input.length);
+            }
+            connection.connect();
+            InputStream inputStream = connection.getInputStream();
+            StringBuffer buffer = new StringBuffer();
+            if(inputStream == null){
+                System.out.println("Steam returned null");
+                return null;
+            }
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+            String jsonString = reader.readLine();
+            return jsonString;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
 
     }
 
