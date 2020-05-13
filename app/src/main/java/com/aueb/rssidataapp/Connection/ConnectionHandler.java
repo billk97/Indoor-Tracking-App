@@ -76,7 +76,7 @@ public class ConnectionHandler {
         }
 
     }
-    public String getNavInstructions(String urlRequestParam , Nav nav){URL url = null;
+    public String NavInstructions(String urlRequestParam , Nav nav){URL url = null;
         BufferedReader reader = null;
         try {
             url = new URL("http://"+ipAddress+":"+port+"/"+urlRequestParam);

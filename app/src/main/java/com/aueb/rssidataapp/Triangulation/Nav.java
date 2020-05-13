@@ -11,6 +11,8 @@ public class Nav {
         this.destLon = destLon;
     }
 
+
+
     public double getSrcLat() {
         return srcLat;
     }
@@ -57,5 +59,16 @@ public class Nav {
 
     public void setPicLon(double picLon) {
         this.picLon = picLon;
+    }
+    @Override
+    public String toString() {
+        return "Nav{" +
+                "srcLat=" + srcLat +
+                ", srcLon=" + srcLon +
+                ", destLat=" + destLat +
+                ", destLon=" + destLon +
+                ", picLat=" + picLat +
+                ", picLon=" + picLon +
+                '}';
     }
 }

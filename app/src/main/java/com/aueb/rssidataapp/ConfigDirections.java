@@ -12,27 +12,22 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.aueb.rssidataapp.Connection.ConnectionHandler;
+import com.aueb.rssidataapp.Triangulation.Nav;
 import com.aueb.rssidataapp.Triangulation.PointOfInterest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class ConfigDirections extends AppCompatActivity implements
         AdapterView.OnItemSelectedListener ,Serializable {
     private Spinner starLocationSpinner, destinationLocationSpinner;
     private Button findMeButton, StartNavigationButton;
     private List<PointOfInterest> pois = null;
-    private PointOfInterest StartLocation ,DestinationLocation  = null;
+    private PointOfInterest startLocation, destinationLocation = null;
     //Todo implement Find me button
     //Todo get navigation info
     //Todo catch exceptions
@@ -65,7 +60,7 @@ public class ConfigDirections extends AppCompatActivity implements
             if(pois!=null){
                 for (PointOfInterest po : pois){
                     if(po.getName().equals(parent.getItemAtPosition(position))){
-                        StartLocation = po;
+                        startLocation = po;
                     }
                 }
             }
@@ -74,13 +69,21 @@ public class ConfigDirections extends AppCompatActivity implements
             if(pois!=null){
                 for (PointOfInterest po : pois){
                     if(po.getName().equals(parent.getItemAtPosition(position))){
-                        DestinationLocation = po;
+                        destinationLocation = po;
                     }
                 }
             }
         }
 
 
+    }
+    public void onFindMeClick(){
+        findMeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -91,8 +94,11 @@ public class ConfigDirections extends AppCompatActivity implements
         StartNavigationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                NavRunner navRunner = new NavRunner();
+                Nav nav = new Nav(startLocation.getLat(), startLocation.getLon(), destinationLocation.getLat(), destinationLocation.getLon());
+                navRunner.execute(nav);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("Start", StartLocation).putExtra("Destination",  DestinationLocation);
+                intent.putExtra("Start", startLocation).putExtra("Destination", destinationLocation);
                 startActivity(intent);
             }
         });
@@ -126,5 +132,15 @@ public class ConfigDirections extends AppCompatActivity implements
             destinationLocationSpinner.setAdapter(adapter);
         }
 
+    }
+    class NavRunner extends AsyncTask<Nav, Double,String>{
+
+        @Override
+        protected String doInBackground(Nav... doubles) {
+            System.out.println(doubles[0]);
+            ConnectionHandler connectionHandler = new ConnectionHandler();
+            System.out.println(connectionHandler.NavInstructions("nav", doubles[0]));
+            return null;
+        }
     }
 }

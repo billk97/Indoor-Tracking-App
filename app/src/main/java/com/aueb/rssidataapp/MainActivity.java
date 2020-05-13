@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                         for (ScanResult result : results) {
                             /** creating a object type AccessPoint for each scan result **/
                             AccessPoint ap = new AccessPoint(result.SSID, result.BSSID, result.level, -30, 4.5);
-                            System.out.println("distance: " + ap.CalculateDistance());
+                            System.out.println("bssid: " +ap.getBssid()+" distance: " + ap.CalculateDistance());
                             if(knownAccessPoint.containsKey(ap.getBssid())){
                                 ap.setX(knownAccessPoint.get(ap.getBssid()).getX());
                                 ap.setY(knownAccessPoint.get(ap.getBssid()).getY());
