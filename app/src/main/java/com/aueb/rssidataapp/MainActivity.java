@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void InitAccessPoints(){
-        AccessPoint ap2 = new AccessPoint("ssid","dc:a6:32:2a:18:ce",-30,4.5 );
+        AccessPoint ap2 = new AccessPoint("ssid","dc:a6:32:2a:02:30",-30,4.5 );
         ap2.setX(23.71642600);
         ap2.setY(38.00764300);
         knownAccessPoint.put(ap2.getBssid(),ap2);
@@ -188,8 +188,8 @@ public class MainActivity extends AppCompatActivity {
         ap2.setX(23.7164576);
         ap2.setY(38.0076294);
         knownAccessPoint.put(ap3.getBssid(),ap3);
-        AsyncTaskRunner runner = new AsyncTaskRunner();
-        runner.execute();
+       // AsyncTaskRunner runner = new AsyncTaskRunner();
+        //runner.execute();
 
     }
     private class AsyncTaskRunnerSendLoc extends AsyncTask<String,String,String>{
