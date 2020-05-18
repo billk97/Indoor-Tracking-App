@@ -167,24 +167,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void InitAccessPoints(){
-        AccessPoint ap = new AccessPoint("ssid","4a:a0:5b:53:c6:e7",-30,4.5 );
-        ap.setX(1);
-        ap.setY(1);
-        knownAccessPoint.put(ap.getBssid(),ap);
-
-        AccessPoint ap1 = new AccessPoint("ssid","b8:27:eb:88:09:a2",-30,4.5);
-        ap1.setX(-2.1);
-        ap1.setY(1);
-        knownAccessPoint.put(ap1.getBssid(),ap1);
-
         AccessPoint ap2 = new AccessPoint("ssid","dc:a6:32:2a:18:ce",-30,4.5 );
-        ap2.setX(-0.5);
-        ap2.setY(-2.3);
+        ap2.setX(23.71642600);
+        ap2.setY(38.00764300);
         knownAccessPoint.put(ap2.getBssid(),ap2);
 
-        AccessPoint ap3 = new AccessPoint("ssid","dc:a6:32:29:d9:8c",-30,4.5 );
-        ap2.setX(-0.5);
-        ap2.setY(-2.3);
+        AccessPoint ap = new AccessPoint("ssid","dc:a6:32:29:d9:8b",-30,4.5 );
+        ap.setX(23.71645445);
+        ap.setY(38.00764145);
+        knownAccessPoint.put(ap.getBssid(),ap);
+
+        AccessPoint ap1 = new AccessPoint("ssid","dc:a6:32:2a:19:34",-30,4.5);
+        ap1.setX(23.7164576);
+        ap1.setY(38.0076294);
+        knownAccessPoint.put(ap1.getBssid(),ap1);
+
+
+
+        AccessPoint ap3 = new AccessPoint("ssid","dc:a6:32:2a:04:10",-30,4.5 );
+        ap2.setX(23.7164576);
+        ap2.setY(38.0076294);
         knownAccessPoint.put(ap3.getBssid(),ap3);
         AsyncTaskRunner runner = new AsyncTaskRunner();
         runner.execute();
