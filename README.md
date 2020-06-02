@@ -36,6 +36,11 @@ Other reasons/ info
 * The was no object between the devices.
 * Except of the Raspberry pi the signal strength transmitted by the access point are not known. Because of that i assume they transmit at -30dB
 
+## Accuracy testing  
+
+In the following section an accuracy test will be described in order to find out how accurate the app is. In order to do so 4 access points will be set up in different position in a much bigger space than before. The phone will be placed in a number of different positions and the predicted position will be calculated 3 times in order to find out if there is a constancy or not.  
+
+As far as location info is concerned real geo location data where intended to be used. However due to the fact that, the calculation for the triangulation where done in meters the use of real geo location data would not help the accuracy. As such the devices location will be based on a cornet of the room which will be considered the (0,0)
 ## Basic flow
 
 ##### How the app will communicate

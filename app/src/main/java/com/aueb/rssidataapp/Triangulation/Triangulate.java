@@ -19,8 +19,9 @@ public class Triangulate implements Serializable {
         int i= 0;
         for (AccessPoint ap : accessPoints) {
             double distance = ap.CalculateDistance();
+            System.out.println("ap.getBssid() " + ap.getBssid());
             System.out.println("ap.CalculateDistance(); " + ap.CalculateDistance());
-            System.out.println("ap.getX() " + ap.getX());
+            System.out.println("X: " + ap.getX() +" Y: "+ap.getY());
             System.out.println("accessPoints.get(accessPoints.size()).getX() " + accessPoints.get(number_of_AccessPoits- 1).getX());
 
             double Ax = 2 * (ap.getX() - accessPoints.get(number_of_AccessPoits - 1).getX());
@@ -35,7 +36,7 @@ public class Triangulate implements Serializable {
                     Math.pow(accessPoints.get(number_of_AccessPoits- 1).getY(), 2) -
                     Math.pow(distance, 2) +
                     Math.pow(accessPoints.get(number_of_AccessPoits- 1).CalculateDistance(), 2);
-            System.out.println("B:" + Bx);
+            System.out.println("Bx: " + Bx);
             B.set(i,0,Bx);
             System.out.println("===========================================");
             i++;
