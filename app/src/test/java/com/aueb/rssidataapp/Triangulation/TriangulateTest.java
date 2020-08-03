@@ -1,19 +1,19 @@
 package com.aueb.rssidataapp.Triangulation;
 
-import com.aueb.rssidataapp.Connection.ConnectionHandler;
+import com.aueb.rssidataapp.Connection.ApiService;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class TriangulateTest {
 
     @Test
     public void getPossition() {
-        ConnectionHandler cn = new ConnectionHandler();
+        ApiService cn = new ApiService();
         AccessPoint ap = new AccessPoint("bill","dd",3,4);
         ap.setY(1.2);
         ap.setY(2.0);

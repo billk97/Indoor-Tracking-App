@@ -1,10 +1,5 @@
 package com.aueb.rssidataapp;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -24,7 +19,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.aueb.rssidataapp.Connection.ConnectionHandler;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.aueb.rssidataapp.Connection.ApiService;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
@@ -32,8 +32,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -176,18 +174,19 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            ConnectionHandler connectionHandler = new ConnectionHandler();
-            connectionHandler.sendLocation(strings[0],Double.valueOf(strings[1]),Double.valueOf(strings[2]));
+            ApiService apiService = new ApiService();
+            apiService.sendLocation(strings[0], Double.valueOf(strings[1]), Double.valueOf(strings[2]));
             return null;
         }
     }
     private class AsyncTaskRunner extends AsyncTask<String,String,String>{
         @Override
         protected String doInBackground(String... strings) {
-            ConnectionHandler connectionHandler = new ConnectionHandler();
+            ApiService apiService = new ApiService();
             List<AccessPoint> accessPoints =null;
             try {
-                accessPoints = new ObjectMapper().readValue(connectionHandler.getRequest("access-point"), new TypeReference<List<AccessPoint>>() {});
+                accessPoints = new ObjectMapper().readValue(apiService.getRequest("access-point"), new TypeReference<List<AccessPoint>>() {
+                });
                 System.out.println("ok");
 
             } catch (JsonProcessingException e) {

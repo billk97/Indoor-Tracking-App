@@ -1,7 +1,5 @@
 package com.aueb.rssidataapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,13 +9,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.aueb.rssidataapp.Connection.ConnectionHandler;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.aueb.rssidataapp.Connection.ApiService;
 import com.aueb.rssidataapp.Triangulation.Nav;
 import com.aueb.rssidataapp.Triangulation.PointOfInterest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,8 +110,8 @@ public class ConfigDirections extends AppCompatActivity implements
 
         @Override
         protected String doInBackground(String... strings) {
-            ConnectionHandler connectionHandler = new ConnectionHandler();
-            return connectionHandler.getRequest(strings[0]);
+            ApiService apiService = new ApiService();
+            return apiService.getRequest(strings[0]);
         }
         @Override
         protected void onPostExecute(String returnValue){
@@ -138,8 +139,12 @@ public class ConfigDirections extends AppCompatActivity implements
         @Override
         protected String doInBackground(Nav... doubles) {
             System.out.println(doubles[0]);
-            ConnectionHandler connectionHandler = new ConnectionHandler();
-            System.out.println(connectionHandler.NavInstructions("nav", doubles[0]));
+            ApiService apiService = new ApiService();
+            try {
+                System.out.println(apiService.NavInstructions("nav", doubles[0]));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return null;
         }
     }

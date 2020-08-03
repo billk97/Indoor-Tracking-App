@@ -3,14 +3,12 @@ package com.aueb.rssidataapp.Triangulation;
 import org.ejml.simple.SimpleMatrix;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Triangulate implements Serializable {
     /**this function returns the X and Y position of the phone
      * @param accessPoints  a list of accessPoints type AccessPoint
      * @return returns an Object type Position with two values (x,y)
-     *
      * **/
     public Position getPossition(List<AccessPoint> accessPoints) {
         int number_of_AccessPoits = accessPoints.size();

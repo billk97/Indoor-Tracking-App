@@ -35,5 +35,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.googlecode.efficient-java-matrix-library:ejml:0.25'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
-    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+    implementation("com.squareup.okhttp3:okhttp:4.8.0")
 }
