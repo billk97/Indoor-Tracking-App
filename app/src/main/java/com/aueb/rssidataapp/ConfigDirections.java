@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
@@ -14,13 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.aueb.rssidataapp.Connection.ApiService;
 import com.aueb.rssidataapp.Triangulation.Nav;
 import com.aueb.rssidataapp.Triangulation.PointOfInterest;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigDirections extends AppCompatActivity implements
@@ -38,7 +33,7 @@ public class ConfigDirections extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config_directions);
         initialize();
-        PoiRunner runner = new PoiRunner();
+        FetchPointsOfInterest runner = new FetchPointsOfInterest();
         runner.execute("poi");
         starLocationSpinner.setOnItemSelectedListener(this);
         destinationLocationSpinner.setOnItemSelectedListener(this);
@@ -105,35 +100,7 @@ public class ConfigDirections extends AppCompatActivity implements
         });
     }
 
-    private class PoiRunner extends AsyncTask<String, String,String> {
 
-
-        @Override
-        protected String doInBackground(String... strings) {
-            ApiService apiService = new ApiService();
-            return apiService.getRequest(strings[0]);
-        }
-        @Override
-        protected void onPostExecute(String returnValue){
-            System.out.println(returnValue);
-            ArrayList<String> poiName = new ArrayList<>();
-            try {
-                pois = new  ObjectMapper().readValue(returnValue, new TypeReference<List<PointOfInterest>>() {});
-                for (PointOfInterest po : pois){
-                    poiName.add(po.getName());
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-            ArrayAdapter<String> adapter =
-                    new ArrayAdapter<String>
-                            (getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, poiName);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            starLocationSpinner.setAdapter(adapter);
-            destinationLocationSpinner.setAdapter(adapter);
-        }
-
-    }
     class NavRunner extends AsyncTask<Nav, Double,String>{
 
         @Override

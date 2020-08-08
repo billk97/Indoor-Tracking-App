@@ -22,7 +22,7 @@ public class ApiUtil {
         if (!response.isSuccessful()) {
             throw new IllegalArgumentException("Failed to connect");
         }
-        System.out.println(response.body().string());
+        System.out.println(response.toString());
         return response.body().string();
     }
 

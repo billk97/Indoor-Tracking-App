@@ -9,11 +9,20 @@ import java.io.IOException;
 public class ApiService {
     ApiUtil apiUtil = new ApiUtil();
 
-    public String getRequest(String urlRequestParam) {
+    public String getPois() {
         try {
             return apiUtil.getRequest("poi");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        throw new IllegalArgumentException("Connection failed");
+    }
+
+    public String getAccessPoints() {
+        try {
+            return apiUtil.getRequest("access-point");
+        } catch (IOException e) {
+            System.err.println("Connection failed");
         }
         throw new IllegalArgumentException("Connection failed");
     }
