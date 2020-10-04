@@ -24,15 +24,14 @@ import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Callback, WifiAccessPointCallback {
+public class MainActivity extends AppCompatActivity implements WifiAccessPointCallback {
     private ListView simpleList;
     private TextView MainActivityTextViewX;
     private TextView MainActivityTextViewY;
     private Button MainActivityButton;
-    private HashMap<String, AccessPoint> knownAccessPoint = new HashMap();
+
     private List<ScanResult> availableAccessPoints = new ArrayList<>();
     List<AccessPoint> accessPointsList = new ArrayList<>();
 
@@ -47,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements Callback, WifiAcc
         setContentView(R.layout.activity_main);
         initializer();
         checkPermissions();
-        InitAccessPoints();
 
 
         MainActivityButton.setOnClickListener(new View.OnClickListener() {
@@ -93,36 +91,7 @@ public class MainActivity extends AppCompatActivity implements Callback, WifiAcc
         }
     }
 
-
-    public void addKnownAccessPoint(AccessPoint newAccessPoint) {
-        knownAccessPoint.put(newAccessPoint.getBssid(), newAccessPoint);
-    }
-
-    public void updateAvailableAccessPoints(List<ScanResult> newAccessPoints) {
-        if (availableAccessPoints != null) {
-            availableAccessPoints.clear();
-        }
-        System.out.println(newAccessPoints.size());
-        availableAccessPoints.addAll(newAccessPoints);
-        System.out.println("2===> " + availableAccessPoints.size());
-        updateAccessPointsList();
-    }
-
     private void updateAccessPointsList() {
-        List<String> knownAvailableAccessPoints = new ArrayList<>();
-        if (availableAccessPoints == null) {
-            return;
-        }
-        for (ScanResult scanResult : availableAccessPoints) {
-            if (knownAccessPoint.containsKey(scanResult.BSSID)) {
-                AccessPoint ap = new AccessPoint(scanResult.SSID, scanResult.BSSID, scanResult.level, -19, 4.5);
-                ap.setX(knownAccessPoint.get(scanResult.BSSID).getX());
-                ap.setY(knownAccessPoint.get(scanResult.BSSID).getY());
-                knownAvailableAccessPoints.add("bssid: " + ap.getBssid() + "\n distance: " + ap.CalculateDistance() + "\n lever: " + ap.getLevel());
-                accessPointsList.add(ap);
-            }
-        }
-        displayKnownAvailableAccessPoints(knownAvailableAccessPoints);
         callculatePosition();
     }
 
@@ -141,28 +110,8 @@ public class MainActivity extends AppCompatActivity implements Callback, WifiAcc
     }
 
 
-    private void InitAccessPoints() {
-        AccessPoint ap = new AccessPoint("ssid", "dc:a6:32:29:d9:8c", -19, 4.5);
-        ap.setX(2);
-        ap.setY(2.5);
-        knownAccessPoint.put(ap.getBssid(), ap);
-
-        AccessPoint ap1 = new AccessPoint("ssid", "dc:a6:32:2a:19:35", -19, 4.5);
-        ap1.setX(2.7);
-        ap1.setY(0.6);
-        knownAccessPoint.put(ap1.getBssid(), ap1);
-
-        AccessPoint ap2 = new AccessPoint("ssid", "dc:a6:32:26:cf:29", -19, 4.5);
-        ap2.setX(6.2);
-        ap2.setY(0.6);
-        knownAccessPoint.put(ap2.getBssid(), ap2);
-
-        AccessPoint ap3 = new AccessPoint("ssid", "dc:a6:32:2a:04:11", -19, 4.5);
-        ap3.setX(5.1);
-        ap3.setY(5.1);
-        knownAccessPoint.put(ap3.getBssid(), ap3);
-        FetchAccessPointList runner = new FetchAccessPointList(this::addKnownAccessPoint);
-        runner.execute();
+    @Override
+    public void updateAvailableAccessPoints(List<ScanResult> newAccessPoints) {
 
     }
 }

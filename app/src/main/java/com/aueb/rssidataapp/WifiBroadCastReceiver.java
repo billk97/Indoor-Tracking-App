@@ -26,9 +26,6 @@ public class WifiBroadCastReceiver extends BroadcastReceiver {
             return;
         }
         List<ScanResult> results = wifiManager.getScanResults();
-        for (ScanResult scanResult : results) {
-            System.out.println(scanResult.toString());
-        }
         callback.updateAvailableAccessPoints(results);
     }
 }
