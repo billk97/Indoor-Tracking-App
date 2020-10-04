@@ -108,7 +108,7 @@ public class ConfigDirections extends AppCompatActivity implements
             System.out.println(doubles[0]);
             ApiService apiService = new ApiService();
             try {
-                System.out.println(apiService.NavInstructions("nav", doubles[0]));
+                System.out.println(apiService.navInstructions("nav", doubles[0]));
             } catch (IOException e) {
                 e.printStackTrace();
             }

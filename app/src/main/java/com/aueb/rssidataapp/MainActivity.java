@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements Callback, WifiAcc
         if (accessPointsList.size() > 2) {
             Triangulate tr = new Triangulate();
             Position position = tr.getPossition(accessPointsList);
-            MainActivityTextViewX.setText(String.valueOf(position.getX()));
-            MainActivityTextViewY.setText(String.valueOf(position.getY()));
+            MainActivityTextViewX.setText(String.valueOf(position.getLat()));
+            MainActivityTextViewY.setText(String.valueOf(position.getLon()));
         }
     }
 

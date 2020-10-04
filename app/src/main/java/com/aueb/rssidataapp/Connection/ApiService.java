@@ -37,11 +37,10 @@ public class ApiService {
 
     }
 
-    public String NavInstructions(String urlRequestParam, Nav nav) throws IOException {
+    public String navInstructions(String urlRequestParam, Nav nav) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonInputString = objectMapper.writeValueAsString(nav);
         return apiUtil.postRequest(urlRequestParam, jsonInputString);
-
     }
 
 }

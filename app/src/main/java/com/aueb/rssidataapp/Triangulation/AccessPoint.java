@@ -3,8 +3,16 @@ package com.aueb.rssidataapp.Triangulation;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Class AccessPoint represents an Access Point with the values we need **/
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccessPoint implements Serializable {
     private String ssid; // the name of the network that the access point is connected to
     private String bssid; // the mac address of each access poin
@@ -15,7 +23,6 @@ public class AccessPoint implements Serializable {
     private double x; // the position of the access point in the x access
     private double y; // the position of the access point in the y access
 
-    public AccessPoint(){}
 
     @Override
     public boolean equals(Object o) {
@@ -50,61 +57,7 @@ public class AccessPoint implements Serializable {
         this.TxPower=TxPower;
         this.h=h;
     }
-    public double getX() {
-        return x;
-    }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public String getSsid() {
-        return ssid;
-    }
-
-    public void setSsid(String ssid) {
-        this.ssid = ssid;
-    }
-
-    public String getBssid() {
-        return bssid;
-    }
-
-    public void setBssid(String bssid) {
-        this.bssid = bssid;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public int getTxPower() {
-        return TxPower;
-    }
-
-    public void setTxPower(int txPower) {
-        TxPower = txPower;
-    }
-
-    public double getH() {
-        return h;
-    }
-
-    public void setH(double h) {
-        this.h = h;
-    }
     /**Lost propagation function calculates the approximate distance between the device and a access point**/
     public double CalculateDistance(){
         double dividend = -level + TxPower ;
@@ -113,16 +66,5 @@ public class AccessPoint implements Serializable {
         return Math.pow(10,power);
     }
 
-    @Override
-    public String toString() {
-        return "AccessPoint{" +
-                "ssid='" + ssid + '\'' +
-                ", bssid='" + bssid + '\'' +
-                ", level=" + level +
-                ", TxPower=" + TxPower +
-                ", h=" + h +
-                ", x=" + x +
-                ", y=" + y +
-                '}';
-    }
+
 }

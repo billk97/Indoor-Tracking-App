@@ -1,6 +1,8 @@
 package com.aueb.rssidataapp.Connection;
 
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
+import com.aueb.rssidataapp.Triangulation.Instraction;
+import com.aueb.rssidataapp.Triangulation.InstractionSets;
 import com.aueb.rssidataapp.Triangulation.Nav;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -50,10 +52,29 @@ public class ApiServiceTest {
         String expected = "{\"distance\":11.0,\"time\":7714,\"instructions\":[{\"points\":{\"size\":1,\"empty\":false,\"dimension\":2,\"immutable\":false,\"3D\":false},\"annotation\":{\"empty\":true,\"importance\":0,\"message\":\"\"},\"sign\":0,\"name\":\"main-semi\",\"distance\":2.856129568763875,\"time\":2056,\"length\":1,\"extraInfoJSON\":{\"heading\":115.73}},{\"points\":{\"size\":1,\"empty\":false,\"dimension\":2,\"immutable\":false,\"3D\":false},\"annotation\":{\"empty\":true,\"importance\":0,\"message\":\"\"},\"sign\":1,\"name\":\"main-bedn\",\"distance\":0.771,\"time\":555,\"length\":1,\"extraInfoJSON\":{}},{\"points\":{\"size\":1,\"empty\":false,\"dimension\":2,\"immutable\":false,\"3D\":false},\"annotation\":{\"empty\":true,\"importance\":0,\"message\":\"\"},\"sign\":-2,\"name\":\"main-beds\",\"distance\":2.282,\"time\":1643,\"length\":1,\"extraInfoJSON\":{}},{\"points\":{\"size\":2,\"empty\":false,\"dimension\":2,\"immutable\":true,\"3D\":false},\"annotation\":{\"empty\":true,\"importance\":0,\"message\":\"\"},\"sign\":0,\"name\":\"hall-living\",\"distance\":4.129,\"time\":2971,\"length\":2,\"extraInfoJSON\":{}},{\"points\":{\"size\":1,\"empty\":false,\"dimension\":2,\"immutable\":true,\"3D\":false},\"annotation\":{\"empty\":true,\"importance\":0,\"message\":\"\"},\"sign\":-2,\"name\":\"door-hall\",\"distance\":0.68,\"time\":489,\"length\":1,\"extraInfoJSON\":{}},{\"points\":{\"size\":1,\"empty\":false,\"dimension\":2,\"immutable\":false,\"3D\":false},\"annotation\":{\"empty\":true,\"importance\":0,\"message\":\"\"},\"sign\":4,\"name\":\"\",\"distance\":0.0,\"time\":0,\"length\":0,\"extraInfoJSON\":{\"last_heading\":355.709387951069}}],\"points\":{\"size\":7,\"empty\":false,\"dimension\":2,\"immutable\":true,\"3D\":false}}";
         Nav nav = new Nav(38.00765939044, 23.71638813776, 38.00768329148, 23.71644625435);
         try {
-            assertEquals(expected, ch.NavInstructions("nav", nav));
+            assertEquals(expected, ch.navInstructions("nav", nav));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void NavInstructions() throws IOException {
+        ApiService apiService = new ApiService();
+        Nav nav = new Nav(38.00765939044, 23.71638813776, 38.00768329148, 23.71644625435);
+        String responce = (apiService.navInstructions("nav", nav));
+        System.out.println(responce);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        InstractionSets instractionSets = objectMapper.readValue(responce, InstractionSets.class);
+        System.out.println(instractionSets.toString());
+
+        System.out.println(instractionSets.getDistance());
+
+        for (Instraction instraction : instractionSets.getInstructions()) {
+            System.out.println(instraction.toString());
+        }
+
     }
 
 

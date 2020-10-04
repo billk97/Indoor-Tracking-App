@@ -43,6 +43,6 @@ public class TriangulateTest {
         aplist.add(ap4);
         Triangulate tr = new Triangulate();
         System.out.println(tr.getPossition(aplist));
-        assertEquals(4.1,tr.getPossition(aplist).getX());
+        assertEquals(4.1, tr.getPossition(aplist).getLat());
     }
 }

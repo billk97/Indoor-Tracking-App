@@ -18,8 +18,6 @@ public class WifiBroadCastReceiver extends BroadcastReceiver {
         this.callback = callback;
     }
 
-
-
     @Override
     public void onReceive(Context context, Intent intent) {
         boolean success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false);
