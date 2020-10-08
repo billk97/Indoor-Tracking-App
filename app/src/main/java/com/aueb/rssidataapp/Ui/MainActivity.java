@@ -1,4 +1,4 @@
-package com.aueb.rssidataapp;
+package com.aueb.rssidataapp.Ui;
 
 import android.Manifest;
 import android.content.Context;
@@ -8,9 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,25 +17,37 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.aueb.rssidataapp.Connection.ApiService;
+import com.aueb.rssidataapp.R;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
+import com.aueb.rssidataapp.Triangulation.Instraction;
+import com.aueb.rssidataapp.Triangulation.InstractionSets;
+import com.aueb.rssidataapp.Triangulation.Nav;
+import com.aueb.rssidataapp.Triangulation.PointOfInterest;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
+import com.aueb.rssidataapp.WifiAccessPointCallback;
+import com.aueb.rssidataapp.WifiBroadCastReceiver;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.SneakyThrows;
 
 public class MainActivity extends AppCompatActivity implements WifiAccessPointCallback {
     private ListView simpleList;
     private TextView MainActivityTextViewX;
     private TextView MainActivityTextViewY;
-    private Button MainActivityButton;
-
+    private PointOfInterest start;
+    private PointOfInterest destination;
     private List<ScanResult> availableAccessPoints = new ArrayList<>();
+    private ApiService apiService = new ApiService();
+    private String navInstractions;
     List<AccessPoint> accessPointsList = new ArrayList<>();
 
-    //todo send location to navDemo
-    //todo cleanUp and break to classes
-
+    @SneakyThrows
     @RequiresApi(api = Build.VERSION_CODES.Q)
 
     @Override
@@ -45,15 +55,14 @@ public class MainActivity extends AppCompatActivity implements WifiAccessPointCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initializer();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            start = (PointOfInterest) getIntent().getSerializableExtra("start");
+            destination = (PointOfInterest) getIntent().getSerializableExtra("destination");
+        }
+        
         checkPermissions();
-
-
-        MainActivityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        getDirections();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
@@ -79,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements WifiAccessPointCa
         simpleList = (ListView) findViewById(R.id.mylist);
         MainActivityTextViewX = (TextView) findViewById(R.id.MainActivityTextViewX);
         MainActivityTextViewY = (TextView) findViewById(R.id.MainActivityTextViewY);
-        MainActivityButton = (Button) findViewById(R.id.MainActivityButton);
     }
 
     private void checkPermissions(){
@@ -97,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements WifiAccessPointCa
 
     private void displayKnownAvailableAccessPoints(List<String> knownAvailableAccessPoints) {
 
-        simpleList.setAdapter(new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, knownAvailableAccessPoints));
+        // simpleList.setAdapter(new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, knownAvailableAccessPoints));
     }
 
     private void callculatePosition() {
@@ -109,6 +117,32 @@ public class MainActivity extends AppCompatActivity implements WifiAccessPointCa
         }
     }
 
+    private void getDirections() throws IOException {
+        System.out.println("start.getLat(): " + start.getLat() +
+                "start.getLon(): " + start.getLon() +
+                "start.getLon(): " + destination.getLat() +
+                "start.getLon(): " + destination.getLon());
+        Nav nav = new Nav(start.getLat(), start.getLon(), destination.getLat(), destination.getLon());
+        navInstractions = apiService.navInstructions("nav", nav);
+        navInstractionsToList(navInstractions);
+        System.out.println(navInstractions);
+    }
+
+    private void navInstractionsToList(String navInstractions) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        InstractionSets instractionSets = objectMapper.readValue(navInstractions, InstractionSets.class);
+        System.out.println(instractionSets.toString());
+
+        System.out.println(instractionSets.getDistance());
+
+        List<String> list = new ArrayList<>();
+        for (Instraction instraction : instractionSets.getInstructions()) {
+            System.out.println(instraction.toString());
+            list.add(instraction.toString());
+            System.out.println("=======================");
+        }
+        simpleList.setAdapter(new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, list));
+    }
 
     @Override
     public void updateAvailableAccessPoints(List<ScanResult> newAccessPoints) {

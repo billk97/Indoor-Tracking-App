@@ -1,4 +1,4 @@
-package com.aueb.rssidataapp;
+package com.aueb.rssidataapp.Ui;
 
 import android.Manifest;
 import android.content.Context;
@@ -21,11 +21,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.aueb.rssidataapp.Connection.ApiService;
+import com.aueb.rssidataapp.ExceptionHandler;
+import com.aueb.rssidataapp.FetchPointsOfInterest;
+import com.aueb.rssidataapp.R;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 import com.aueb.rssidataapp.Triangulation.Nav;
 import com.aueb.rssidataapp.Triangulation.PointOfInterest;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
+import com.aueb.rssidataapp.WifiBroadCastReceiver;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -45,6 +49,7 @@ public class ConfigDirections extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_config_directions);
         initialize();
         FetchPointsOfInterest runner = new FetchPointsOfInterest();
@@ -76,9 +81,8 @@ public class ConfigDirections extends AppCompatActivity implements
                 }
             }
         }
-
-
     }
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
@@ -90,10 +94,11 @@ public class ConfigDirections extends AppCompatActivity implements
                 NavRunner navRunner = new NavRunner();
                 System.out.println("startLocation: " + startLocation.toString());
                 System.out.println("destination: " + destinationLocation.toString());
-                Nav nav = new Nav(startLocation.getLat(), startLocation.getLon(), destinationLocation.getLat(), destinationLocation.getLon());
+                // Nav nav = new Nav(startLocation.getLat(), startLocation.getLon(), destinationLocation.getLat(), destinationLocation.getLon());
+                Nav nav = new Nav(startLocation.getLat(), startLocation.getLon(), 38.00768329148, 23.71644625435);
                 navRunner.execute(nav);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("Start", startLocation).putExtra("Destination", destinationLocation);
+                intent.putExtra("start", startLocation).putExtra("destination", destinationLocation);
                 startActivity(intent);
             }
         });
@@ -189,6 +194,4 @@ public class ConfigDirections extends AppCompatActivity implements
         startLocation.setLat(position.getLat());
         startLocation.setLon(position.getLon());
     }
-
-
 }

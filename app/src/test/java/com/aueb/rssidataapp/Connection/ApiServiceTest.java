@@ -73,6 +73,7 @@ public class ApiServiceTest {
 
         for (Instraction instraction : instractionSets.getInstructions()) {
             System.out.println(instraction.toString());
+            System.out.println("=======================");
         }
 
     }

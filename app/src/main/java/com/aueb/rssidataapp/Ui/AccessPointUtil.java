@@ -1,8 +1,10 @@
-package com.aueb.rssidataapp;
+package com.aueb.rssidataapp.Ui;
 
 
 import android.net.wifi.ScanResult;
 
+import com.aueb.rssidataapp.Callback;
+import com.aueb.rssidataapp.FetchAccessPointList;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 
 import java.util.ArrayList;
