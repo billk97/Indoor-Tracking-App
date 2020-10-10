@@ -44,5 +44,6 @@ public class TriangulateTest {
         Triangulate tr = new Triangulate();
         System.out.println(tr.getPossition(aplist));
         assertEquals(4.1, tr.getPossition(aplist).getLat());
+        assertEquals(2.5, tr.getPossition(aplist).getLon());
     }
 }

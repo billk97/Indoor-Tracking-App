@@ -6,10 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
-@NoArgsConstructor
 public class Triangulate implements Serializable {
 
     public Position getPossition(List<AccessPoint> accessPoints) {
@@ -37,7 +35,6 @@ public class Triangulate implements Serializable {
             System.out.println("===========================================");
             i++;
         }
-
         SimpleMatrix At = A.transpose().mult(A).invert().mult(A.transpose()).mult(B);
         A.print();
         B.print();
@@ -46,5 +43,6 @@ public class Triangulate implements Serializable {
         System.out.println(At.get(1,0));
         return new Position(At.get(0,0),At.get(1,0));
     }
+
 
 }

@@ -14,24 +14,39 @@ import java.util.List;
 public class AccessPointUtil implements Callback {
     private HashMap<String, AccessPoint> knownAccessPoint = new HashMap();
 
-    AccessPointUtil() {
+    public AccessPointUtil() {
         InitAccessPoints();
     }
 
-    public List<AccessPoint> converter(List<ScanResult> availableAccessPoints) {
+    public List<AccessPoint> convertToKnowAccessPoints(List<ScanResult> availableAccessPoints) {
         List<AccessPoint> accessPointsList = new ArrayList<>();
         if (availableAccessPoints == null) {
             throw new IllegalStateException("ScanResult list was  empty");
         }
+        availableAccessPoints = filterScanResults(availableAccessPoints);
         for (ScanResult scanResult : availableAccessPoints) {
-            if (knownAccessPoint.containsKey(scanResult.BSSID)) {
-                AccessPoint ap = new AccessPoint(scanResult.SSID, scanResult.BSSID, scanResult.level, -19, 4.5);
-                ap.setX(knownAccessPoint.get(scanResult.BSSID).getX());
-                ap.setY(knownAccessPoint.get(scanResult.BSSID).getY());
+            AccessPoint ap = new AccessPoint(
+                    scanResult.SSID, scanResult.BSSID, scanResult.level, -19, 4.5,
+                    knownAccessPoint.get(scanResult.BSSID).getX(),
+                    knownAccessPoint.get(scanResult.BSSID).getY()
+            );
                 accessPointsList.add(ap);
-            }
         }
         return accessPointsList;
+    }
+
+    public List<ScanResult> filterScanResults(List<ScanResult> newScanResults) {
+        if (newScanResults.isEmpty()) {
+            System.out.println("==> New scan results are empty <==");
+            throw new IllegalArgumentException("New scan results are empty");
+        }
+        List<ScanResult> filteredScanResults = new ArrayList<>();
+        for (ScanResult scanResult : newScanResults) {
+            if (knownAccessPoint.containsKey(scanResult.BSSID)) {
+                filteredScanResults.add(scanResult);
+            }
+        }
+        return filteredScanResults;
     }
 
     private void InitAccessPoints() {

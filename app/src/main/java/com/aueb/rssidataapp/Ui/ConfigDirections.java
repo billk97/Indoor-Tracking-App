@@ -1,12 +1,9 @@
 package com.aueb.rssidataapp.Ui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,12 +18,12 @@ import androidx.core.content.ContextCompat;
 
 import com.aueb.rssidataapp.FetchPointsOfInterest;
 import com.aueb.rssidataapp.R;
+import com.aueb.rssidataapp.Scan.ScanService;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
 import com.aueb.rssidataapp.Triangulation.Nav;
 import com.aueb.rssidataapp.Triangulation.PointOfInterest;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
-import com.aueb.rssidataapp.WifiBroadCastReceiver;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,6 +33,7 @@ public class ConfigDirections extends AppCompatActivity implements
         AdapterView.OnItemSelectedListener, Serializable {
     private Spinner destinationLocationSpinner;
     private Button findMeButton, StartNavigationButton;
+    private ScanService scanService = new ScanService();
     private List<PointOfInterest> pois = null;
     private PointOfInterest destinationLocation = new PointOfInterest();
     private PointOfInterest startLocation = new PointOfInterest();
@@ -123,17 +121,7 @@ public class ConfigDirections extends AppCompatActivity implements
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
         } else {
-            final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            WifiBroadCastReceiver wifiScanner = new WifiBroadCastReceiver(wifiManager, this::updateAvailableAccessPoints);
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-            getApplicationContext().registerReceiver(wifiScanner, intentFilter);
-            boolean success = wifiManager.startScan();
-            if (!success) {
-                System.out.println("Something when't wrong, probably permission where not given");
-            } else {
-                System.out.println("Scanning is allowed");
-            }
+            scanService.startScan(getApplicationContext());
         }
     }
 
@@ -152,7 +140,7 @@ public class ConfigDirections extends AppCompatActivity implements
 
     private List<AccessPoint> filterAccessPoints() {
         AccessPointUtil accessPointUtil = new AccessPointUtil();
-        return accessPointUtil.converter(availableAccessPoints);
+        return accessPointUtil.convertToKnowAccessPoints(availableAccessPoints);
     }
 
     private void TriangulatePossition(List<AccessPoint> accessPoints) {
