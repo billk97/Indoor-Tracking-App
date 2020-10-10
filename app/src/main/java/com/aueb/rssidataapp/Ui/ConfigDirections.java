@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,8 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.aueb.rssidataapp.Connection.ApiService;
-import com.aueb.rssidataapp.ExceptionHandler;
 import com.aueb.rssidataapp.FetchPointsOfInterest;
 import com.aueb.rssidataapp.R;
 import com.aueb.rssidataapp.Triangulation.AccessPoint;
@@ -31,13 +28,12 @@ import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
 import com.aueb.rssidataapp.WifiBroadCastReceiver;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigDirections extends AppCompatActivity implements
-        AdapterView.OnItemSelectedListener ,Serializable {
+        AdapterView.OnItemSelectedListener, Serializable {
     private Spinner destinationLocationSpinner;
     private Button findMeButton, StartNavigationButton;
     private List<PointOfInterest> pois = null;
@@ -49,7 +45,6 @@ public class ConfigDirections extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_config_directions);
         initialize();
         FetchPointsOfInterest runner = new FetchPointsOfInterest();
@@ -71,13 +66,16 @@ public class ConfigDirections extends AppCompatActivity implements
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Spinner spinner2 = (Spinner) parent;
-        if(spinner2.getId() == R.id.ConfigDestinationSpinner){
-            if(pois!=null){
-                for (PointOfInterest po : pois){
-                    if(po.getName().equals(parent.getItemAtPosition(position))){
-                        destinationLocation = po;
-                    }
+        Spinner spinner = (Spinner) parent;
+        if (spinner.getId() == R.id.ConfigDestinationSpinner) {
+            if (pois == null) {
+                System.out.println("Pois = 0");
+                return;
+            }
+            for (PointOfInterest po : pois) {
+                if (po.getName().equals(parent.getItemAtPosition(position))) {
+                    System.out.println(po.toString());
+                    destinationLocation = po;
                 }
             }
         }
@@ -91,33 +89,16 @@ public class ConfigDirections extends AppCompatActivity implements
         StartNavigationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavRunner navRunner = new NavRunner();
                 System.out.println("startLocation: " + startLocation.toString());
                 System.out.println("destination: " + destinationLocation.toString());
                 // Nav nav = new Nav(startLocation.getLat(), startLocation.getLon(), destinationLocation.getLat(), destinationLocation.getLon());
-                Nav nav = new Nav(startLocation.getLat(), startLocation.getLon(), 38.00768329148, 23.71644625435);
-                navRunner.execute(nav);
+                Nav nav = new Nav(startLocation.getLat(), startLocation.getLon(),
+                        38.00768329148, 23.71644625435);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("start", startLocation).putExtra("destination", destinationLocation);
+                intent.putExtra("nav", nav);
                 startActivity(intent);
             }
         });
-    }
-
-
-    class NavRunner extends AsyncTask<Nav, Double,String>{
-
-        @Override
-        protected String doInBackground(Nav... doubles) {
-            System.out.println(doubles[0]);
-            ApiService apiService = new ApiService();
-            try {
-                System.out.println(apiService.navInstructions("nav", doubles[0]));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 
     public void onClickFindMe() {

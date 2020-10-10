@@ -5,11 +5,13 @@ import org.ejml.simple.SimpleMatrix;
 import java.io.Serializable;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class Triangulate implements Serializable {
-    /**this function returns the X and Y position of the phone
-     * @param accessPoints  a list of accessPoints type AccessPoint
-     * @return returns an Object type Position with two values (x,y)
-     * **/
+
     public Position getPossition(List<AccessPoint> accessPoints) {
         int number_of_AccessPoits = accessPoints.size();
         SimpleMatrix A = new SimpleMatrix(number_of_AccessPoits,2);

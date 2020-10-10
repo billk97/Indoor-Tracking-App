@@ -1,5 +1,7 @@
 package com.aueb.rssidataapp.Triangulation;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Nav {
+public class Nav implements Serializable {
     private double srcLat, srcLon, destLat, destLon, picLat, picLon;
 
     public Nav(double srcLat, double srcLon, double destLat, double destLon) {

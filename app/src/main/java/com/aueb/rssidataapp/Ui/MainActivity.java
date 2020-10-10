@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -23,7 +24,6 @@ import com.aueb.rssidataapp.Triangulation.AccessPoint;
 import com.aueb.rssidataapp.Triangulation.Instraction;
 import com.aueb.rssidataapp.Triangulation.InstractionSets;
 import com.aueb.rssidataapp.Triangulation.Nav;
-import com.aueb.rssidataapp.Triangulation.PointOfInterest;
 import com.aueb.rssidataapp.Triangulation.Position;
 import com.aueb.rssidataapp.Triangulation.Triangulate;
 import com.aueb.rssidataapp.WifiAccessPointCallback;
@@ -40,8 +40,7 @@ public class MainActivity extends AppCompatActivity implements WifiAccessPointCa
     private ListView simpleList;
     private TextView MainActivityTextViewX;
     private TextView MainActivityTextViewY;
-    private PointOfInterest start;
-    private PointOfInterest destination;
+    private Nav nav;
     private List<ScanResult> availableAccessPoints = new ArrayList<>();
     private ApiService apiService = new ApiService();
     private String navInstractions;
@@ -57,12 +56,12 @@ public class MainActivity extends AppCompatActivity implements WifiAccessPointCa
         initializer();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            start = (PointOfInterest) getIntent().getSerializableExtra("start");
-            destination = (PointOfInterest) getIntent().getSerializableExtra("destination");
+            nav = (Nav) getIntent().getSerializableExtra("nav");
         }
-        
+        ApiRunner apiRunner = new ApiRunner();
+        apiRunner.execute();
         checkPermissions();
-        getDirections();
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
@@ -117,35 +116,44 @@ public class MainActivity extends AppCompatActivity implements WifiAccessPointCa
         }
     }
 
-    private void getDirections() throws IOException {
-        System.out.println("start.getLat(): " + start.getLat() +
-                "start.getLon(): " + start.getLon() +
-                "start.getLon(): " + destination.getLat() +
-                "start.getLon(): " + destination.getLon());
-        Nav nav = new Nav(start.getLat(), start.getLon(), destination.getLat(), destination.getLon());
+    private String getDirections() throws IOException {
+        System.out.println("start.getLat(): " + nav.getDestLat());
+        System.out.println("+++++++++++++++++++++++++++++++++++++");
+        System.out.println(nav);
         navInstractions = apiService.navInstructions("nav", nav);
-        navInstractionsToList(navInstractions);
-        System.out.println(navInstractions);
+        return navInstractions;
     }
 
     private void navInstractionsToList(String navInstractions) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         InstractionSets instractionSets = objectMapper.readValue(navInstractions, InstractionSets.class);
-        System.out.println(instractionSets.toString());
-
-        System.out.println(instractionSets.getDistance());
-
         List<String> list = new ArrayList<>();
         for (Instraction instraction : instractionSets.getInstructions()) {
-            System.out.println(instraction.toString());
             list.add(instraction.toString());
-            System.out.println("=======================");
         }
-        simpleList.setAdapter(new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, list));
+        simpleList.setAdapter(
+                new ArrayAdapter(getApplicationContext(), R.layout.listview, R.id.textView, list)
+        );
     }
 
     @Override
     public void updateAvailableAccessPoints(List<ScanResult> newAccessPoints) {
 
+    }
+
+    class ApiRunner extends AsyncTask<Nav, Double, String> {
+
+        @SneakyThrows
+        @Override
+        protected String doInBackground(Nav... navs) {
+            return getDirections();
+        }
+
+        @SneakyThrows
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            navInstractionsToList(s);
+        }
     }
 }

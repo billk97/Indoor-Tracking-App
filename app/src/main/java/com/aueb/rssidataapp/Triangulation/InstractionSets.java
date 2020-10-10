@@ -1,5 +1,6 @@
 package com.aueb.rssidataapp.Triangulation;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
@@ -20,5 +21,6 @@ import lombok.ToString;
 public class InstractionSets {
     double distance;
     List<Instraction> instructions;
+    @JsonIgnore
     long time;
 }
