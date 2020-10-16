@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements WifiAccessPointCa
         }else{
 
             final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            WifiBroadCastReceiver wifiScanner = new WifiBroadCastReceiver(wifiManager, this::updateAvailableWifiScanResults);
+            WifiBroadCastReceiver wifiScanner = new WifiBroadCastReceiver(wifiManager, this::getCurrentPosition);
 
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
@@ -137,9 +137,11 @@ public class MainActivity extends AppCompatActivity implements WifiAccessPointCa
     }
 
     @Override
-    public void updateAvailableWifiScanResults(List<ScanResult> newAccessPoints) {
+    public void getCurrentPosition(Position newAccessPoints) {
+
 
     }
+
 
     class ApiRunner extends AsyncTask<Nav, Double, String> {
 

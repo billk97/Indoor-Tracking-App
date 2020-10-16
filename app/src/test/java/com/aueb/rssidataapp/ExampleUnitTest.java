@@ -28,4 +28,18 @@ public class ExampleUnitTest {
         apiUtil.getRequest("test");
         assertEquals(4, 2 + 2);
     }
+
+    @Test
+    public void testLambd() {
+        bill myLamda = (int a, int b) -> {
+            return a + b;
+        };
+        System.out.println(myLamda.bill1(1, 2));
+    }
+
+
+}
+
+interface bill {
+    int bill1(int a, int b);
 }
